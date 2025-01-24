@@ -1,5 +1,6 @@
 package de.starwit.rest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,14 +12,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.starwit.data.AlertDb;
+
 @RestController
 @RequestMapping("/api/alerts")
 public class AlertController {
 
+    @Autowired
+    private AlertDb alertDb;
+
     @GetMapping()
     public ResponseEntity<?> findAll() {
         try {
-            return new ResponseEntity<>("GetAll Results", HttpStatus.OK);
+            String responseString = "Results: \r\n";
+            for (String alert : alertDb.getAlerts()) {
+                responseString = responseString + alert + "\r\n";
+            }
+            return new ResponseEntity<>(responseString, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -27,6 +37,7 @@ public class AlertController {
     @GetMapping("/{name}")
     public ResponseEntity<?> find(@PathVariable String name) {
         try {
+            alertDb.getAlerts().add(name);
             return new ResponseEntity<>("GetOne Result: " + name, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
