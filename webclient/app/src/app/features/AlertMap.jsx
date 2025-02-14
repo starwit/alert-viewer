@@ -2,8 +2,15 @@ import {DeckGL} from "@deck.gl/react";
 import {MapView} from '@deck.gl/core';
 import {TileLayer} from "@deck.gl/geo-layers";
 import {BitmapLayer} from "@deck.gl/layers";
+import AlertRest from "../services/AlertRest";
+import {toast} from "react-toastify";
+import React, {useEffect, useMemo, useState} from "react";
 
 function AlertMap() {
+
+    const alertRest = useMemo(() => new AlertRest(), []);
+    const [alerts, setAlerts] = useState([]);
+
     // Set initial map position and zoom level
     const INITIAL_VIEW_STATE = {
         longitude: -86.13470,     // Initial longitude (X coordinate)
@@ -20,6 +27,49 @@ function AlertMap() {
 
     // Create map view settings - enable map repetition when scrolling horizontally
     const MAP_VIEW = new MapView({repeat: true});
+
+    useEffect(() => {
+        reloadAlerts();
+        const interval = setInterval(reloadAlerts, 2000); // Update alle 5 Sekunden
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        if (alerts == null) {
+            return;
+        }
+        alerts.forEach(alert => {
+            toast.info(alert, {
+                position: "top-center",
+                style: {
+                    top: 100
+                },
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                onClose: deleteAlert(alert),
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                delay: 2000,
+                theme: "colored",
+                type: "error"
+            });
+        });
+    }, [alerts]);
+
+    function reloadAlerts() {
+        alertRest.findAll().then(response => {
+            if (response.data == null) {
+                return;
+            }
+            setAlerts(response.data);
+        });
+    }
+
+    function deleteAlert(name) {
+        alertRest.delete(name);
+    }
 
     // Define map layers
     function createBaseMapLayer() {
@@ -49,12 +99,15 @@ function AlertMap() {
     }
 
     return (
-        <DeckGL
-            layers={layers}               // Add map layers
-            views={MAP_VIEW}              // Add map view settings
-            initialViewState={INITIAL_VIEW_STATE}  // Set initial position
-            controller={{dragRotate: false}}       // Disable rotation
-        />
+        <>
+            <DeckGL
+                layers={layers}               // Add map layers
+                views={MAP_VIEW}              // Add map view settings
+                initialViewState={INITIAL_VIEW_STATE}  // Set initial position
+                controller={{dragRotate: false}}       // Disable rotation
+            />
+        </>
+
     );
 }
 
