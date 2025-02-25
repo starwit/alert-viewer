@@ -17,7 +17,7 @@
 	<packaging>pom</packaging>
 
 	<scm>
-		<connection>scm:git:https://github.com/starwit/alter-viewer.git</connection>
+		<connection>scm:git:https://github.com/starwit/alert-viewer.git</connection>
 		<tag>0.0.10</tag>
 	</scm>
 
