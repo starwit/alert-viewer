@@ -16,6 +16,11 @@
 	<description>Receive, save and display alerts</description>
 	<packaging>pom</packaging>
 
+	<scm>
+		<connection>scm:git:https://github.com/starwit/alter-viewer.git</connection>
+		<tag>0.0.10</tag>
+	</scm>
+
 	<properties>
 		<java.version>21</java.version>
 	</properties>
