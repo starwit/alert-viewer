@@ -38,6 +38,11 @@ jobs:
       with:
          maven-version: 3.9.2      
 
+    - name: setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22 
+
     - name: checkout
       uses: actions/checkout@v4
       with:
@@ -80,6 +85,13 @@ jobs:
     - name: Checkout tag
       run: |
         git checkout ${{ env.TAG }}
+
+    - name: npm install
+      run: |
+        if [ -d "webclient/app" ]; then
+          cd webclient/app
+          npm install
+        fi
 
     - name: Build with Maven
       run: mvn clean -B package -P frontend --file pom.xml
