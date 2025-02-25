@@ -1,7 +1,6 @@
 **/target/
 !.mvn/wrapper/maven-wrapper.jar
 *.log
-application.properties
 docker-compose.yml
 
 ### webclient (npm builds) ###
