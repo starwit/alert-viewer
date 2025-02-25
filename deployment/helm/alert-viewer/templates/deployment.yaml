@@ -35,13 +35,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: {{ .Values.app.context_path }}/monitoring/health
+              path: {{ .Values.app.context_path }}/api/alerts
               port: http
             initialDelaySeconds: 30
             periodSeconds: 5
           readinessProbe:
             httpGet:
-              path: {{ .Values.app.context_path }}/monitoring/health
+              path: {{ .Values.app.context_path }}/api/alerts
               port: http
             initialDelaySeconds: 30
             periodSeconds: 5
