@@ -82,7 +82,7 @@ jobs:
         git checkout ${{ env.TAG }}
 
     - name: Build with Maven
-      run: mvn clean -B package --file pom.xml
+      run: mvn clean -B package -P frontend --file pom.xml
       env:
          CI: false
 
