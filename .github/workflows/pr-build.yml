@@ -47,4 +47,4 @@ jobs:
 
     - name: run helm template
       working-directory: application/target/helm
-      run: helm template ai-cockpit
+      run: helm template alert-viewer
