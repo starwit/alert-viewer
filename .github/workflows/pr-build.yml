@@ -35,8 +35,6 @@ jobs:
       run: mvn clean -B package --file pom.xml
       env:
          CI: false
-         PRIVATE_REPO_USERNAME: ${{ vars.PRIVATE_REPO_USERNAME }}
-         MAVEN_REPO_READ: ${{ secrets.MAVEN_REPO_READ }}
 
   checks:
     name: "Checks"
