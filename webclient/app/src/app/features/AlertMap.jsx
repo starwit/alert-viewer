@@ -1,7 +1,7 @@
 import {DeckGL} from "@deck.gl/react";
 import {MapView} from '@deck.gl/core';
 import {TileLayer} from "@deck.gl/geo-layers";
-import {BitmapLayer} from "@deck.gl/layers";
+import {BitmapLayer, IconLayer} from "@deck.gl/layers";
 import AlertRest from "../services/AlertRest";
 import {toast} from "react-toastify";
 import React, {useEffect, useMemo, useState} from "react";
@@ -10,6 +10,7 @@ function AlertMap() {
 
     const alertRest = useMemo(() => new AlertRest(), []);
     const [alerts, setAlerts] = useState([]);
+    const [marker, setMarker] = useState([]);
 
     // Set initial map position and zoom level
     const INITIAL_VIEW_STATE = {
@@ -23,6 +24,7 @@ function AlertMap() {
 
     const layers = [
         createBaseMapLayer(),
+        createIconLayer()
     ];
 
     // Create map view settings - enable map repetition when scrolling horizontally
@@ -30,7 +32,7 @@ function AlertMap() {
 
     useEffect(() => {
         reloadAlerts();
-        const interval = setInterval(reloadAlerts, 2000); // Update alle 5 Sekunden
+        const interval = setInterval(reloadAlerts, 5000); // Update alle 5 Sekunden
         return () => clearInterval(interval);
     }, []);
 
@@ -39,19 +41,17 @@ function AlertMap() {
             return;
         }
         alerts.forEach(alert => {
-            toast.info(alert, {
-                position: "top-center",
-                style: {
-                    top: 100
-                },
+            toast.info(alert.name, {
+                position: "top-left",
+                style: {top: 100},
                 autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: false,
-                onClose: deleteAlert(alert),
+                onClose: deleteAlert(alert.name),
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                delay: 2000,
+                delay: 0,
                 theme: "colored",
                 type: "error"
             });
@@ -59,11 +59,17 @@ function AlertMap() {
     }, [alerts]);
 
     function reloadAlerts() {
-        alertRest.findAll().then(response => {
+        alertRest.findAllMarker().then(response => {
             if (response.data == null) {
                 return;
             }
-            setAlerts(response.data);
+            let markers = response.data;
+            alertRest.findAll().then(response => {
+                if (response.data != null) {
+                    setAlerts(response.data);
+                }
+                setMarker(markers);
+            });
         });
     }
 
@@ -98,16 +104,28 @@ function AlertMap() {
         })
     }
 
-    return (
-        <>
-            <DeckGL
-                layers={layers}               // Add map layers
-                views={MAP_VIEW}              // Add map view settings
-                initialViewState={INITIAL_VIEW_STATE}  // Set initial position
-                controller={{dragRotate: false}}       // Disable rotation
-            />
-        </>
+    function createIconLayer() {
+        return new IconLayer({
+            id: 'IconLayer',
+            data: marker,
 
+            getColor: d => [140, 0, 0],
+            getIcon: d => 'marker',
+            getPosition: d => d.coordinates,
+            getSize: 30,
+            iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
+            iconMapping: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.json',
+            pickable: true,
+        });
+    }
+
+    return (
+        <DeckGL
+            layers={layers}               // Add map layers
+            views={MAP_VIEW}              // Add map view settings
+            initialViewState={INITIAL_VIEW_STATE}  // Set initial position
+            controller={{dragRotate: false}}       // Disable rotation
+        />
     );
 }
 

@@ -1,0 +1,9 @@
+apiVersion: v2
+name: alert-viewer-chart
+description: A Helm chart to deploy alert viewer to Kubernetes
+
+type: application
+
+version: ${project.version}
+
+appVersion: "${project.version}"
