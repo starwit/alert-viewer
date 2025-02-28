@@ -7,7 +7,7 @@ This is a demo project to simulate a rest endpoint. It is used to receive alerts
 1) Build the project with
 
     ```bash
-    mvn clean install
+    mvn clean install -P frontend
 
 2) Start project
 
