@@ -19,5 +19,5 @@ This is a demo project to simulate a rest endpoint. It is used to receive alerts
 3) Start project
 
     ```bash
-    java -jar target/alert-viewer-xxx.jar
+    java -jar application/target/application-xxx.jar
     ```
