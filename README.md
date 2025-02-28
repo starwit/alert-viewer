@@ -4,12 +4,19 @@ This is a demo project to simulate a rest endpoint. It is used to receive alerts
 
 ### How to build
 
-1) Build the project with
+1) Go to `webclient/app` and install the frontend applications dependencies
+
+    ```bash
+    cd webclient/app
+    npm install
+    ```
+
+2) Build the project with
 
     ```bash
     mvn clean install -P frontend
 
-2) Start project
+3) Start project
 
     ```bash
     java -jar target/alert-viewer-xxx.jar
