@@ -25,6 +25,12 @@ Helm chart for application can be found [here](https://hub.docker.com/r/starwito
     java -jar application/target/application-xxx.jar
     ```
 
+## How to test
+Following call will create a test alert:
+```bash
+    curl http://localhost:8080/api/alerts/test/39.970750433126994/-86.12693383495157
+```
+
 ## Contact & Contribution
 
 The “KI-Cockpit” (AI Cockpit) project was funded by the Federal Ministry of Labor and Social Affairs.
